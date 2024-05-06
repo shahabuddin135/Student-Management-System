@@ -2,13 +2,23 @@ import inquirer from "inquirer";
 import { studentData } from "../database/database.js";
 
 
+
+
 //Function for creating Prompt 
+
+type Prompt = {
+  name: string;
+  type: string;
+  message: string;
+  choices?: string[];
+};
+
 export const makePrompt = async (name:string, message:string, type:string = "input", choices?:any[]) => {
-  let question = {
+  let question:Prompt = {
       name: name,
       type: type,
       message: message,
-      ...(choices && { choices: choices })
+      choices: choices,
   };
 
   // here goes obj addition logic and array push logic
@@ -129,6 +139,8 @@ export let deleteStudent = async () => {
 
 
 //////////////////////////////////////
+
+
 /////////////////////////////////////
 
 // Function to show student status
@@ -144,7 +156,8 @@ export let showStatus = async () => {
     console.log(`Student Name: ${student.name}`);
     console.log(`Age: ${student.age}`);
     console.log(`ID: ${student.ID}`);
-    console.log(`Fee Status: ${student.fee}`);
+    console.log(`Course Enrolled: ${student.courses}`);
+    console.log(`Fee Status: ${student.feePaid}`);
     console.log(`Due Fee: ${student.dueFee}`);
   } else {
     console.log("Student not found!");
@@ -240,17 +253,17 @@ export let enrollment = async ()=>{
   
   let confirmID = await inquirer.prompt(
     {
-      name:"ID",
-      type:"input",
+      name:"studentID",
+      type:"number",
       message:"Enter student ID",
     }
   );
 
-   let studentID = studentData.find(student => student.ID === confirmID.ID)
+   let student = studentData.find(student => student.ID === confirmID.studentID)
    
-   if(studentID){
+   if(student){ 
   
-     let courses = await inquirer.prompt(
+     let {course} = await inquirer.prompt(
       {
       name:"course",
       type:"list",
@@ -259,9 +272,12 @@ export let enrollment = async ()=>{
       }
      );
     
+   
 
-  studentData[studentID].courses = courses.course;
-  console.log(`Student succesfully enrolled`);
+   //student.courses = [course]
+   student.courses?.push(course)
+
+  console.log(`Student successfully enrolled in ${course}`);
   }else{
     console.log("Invalid ID");
     

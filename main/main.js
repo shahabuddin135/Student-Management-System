@@ -16,6 +16,7 @@ let main = async function () {
     }
     else if (Userchoice === "Delete student") {
         await deleteStudent();
+        await main();
     }
     else if (Userchoice === "Show student status") {
         await showStatus();
@@ -24,6 +25,9 @@ let main = async function () {
     else if (Userchoice === "Enroll in a course") {
         await enrollment();
         await main();
+    }
+    else if (Userchoice === "Exit") {
+        console.log("\n\tThanks for using Student management system\t\n");
     }
 };
 main();

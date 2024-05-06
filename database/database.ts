@@ -1,5 +1,17 @@
 
 // This will store all student records status and Data
-export const studentData:any[] = []; 
+
+interface Student {
+    name?: string;
+    age?:number;
+    ID?: number;
+    courses?:any[];
+    feePaid?:true;
+    dueFee?:number;
+
+};
+
+
+export const studentData:Student[] = []; 
 
 
