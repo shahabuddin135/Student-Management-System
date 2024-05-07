@@ -48,6 +48,12 @@ export let admitStudent = async () => {
           type: "input",
       },
       {
+        message:"Which course do you want to enroll in?",
+        name:"courses",
+        type:"list",
+        choices:["Next.js","Javascript","Typescript","HTML","CSS"]
+      },
+      {
           message: "Generate a unique ID?",
           name: "generateID",
           type: "confirm",
@@ -274,7 +280,7 @@ export let enrollment = async ()=>{
     
    
 
-   //student.courses = [course]
+   student.courses = [course]
    student.courses?.push(course)
 
   console.log(`Student successfully enrolled in ${course}`);
