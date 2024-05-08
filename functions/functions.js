@@ -30,7 +30,7 @@ export let admitStudent = async () => {
                 message: "Which course do you want to enroll in?",
                 name: "courses",
                 type: "list",
-                choices: ["Next.js", "Javascript", "Typescript", "HTML", "CSS"]
+                choices: ["Next.js", "Javascript", "Typescript", "HTML", "CSS"],
             },
             {
                 message: "Generate a unique ID?",
@@ -69,15 +69,15 @@ export let deleteStudent = async () => {
     let confirmDelete = await inquirer.prompt({
         name: "confirm",
         type: "confirm",
-        message: "Do you really want to delete this student?"
+        message: "Do you really want to delete this student?",
     });
     if (confirmDelete.confirm) {
         let { studentID } = await inquirer.prompt({
             name: "studentID",
             type: "number",
-            message: "Enter the student ID to delete"
+            message: "Enter the student ID to delete",
         });
-        let studentToDeleteIndex = studentData.findIndex(student => student.ID === studentID);
+        let studentToDeleteIndex = studentData.findIndex((student) => student.ID === studentID);
         console.log(`the student with the following data was deleted`);
         let deletedStudent = studentData.splice(studentToDeleteIndex, 1);
         console.log(deletedStudent);
@@ -86,16 +86,14 @@ export let deleteStudent = async () => {
         console.log("Deletion cancelled");
     }
 };
-//////////////////////////////////////
-/////////////////////////////////////
 // Function to show student status
 export let showStatus = async () => {
     let { ID } = await inquirer.prompt({
         name: "ID",
         type: "number",
-        message: "Enter the student ID to check status"
+        message: "Enter the student ID to check status",
     });
-    let student = studentData.find(student => student.ID === ID);
+    let student = studentData.find((student) => student.ID === ID);
     if (student) {
         console.log(`Student Name: ${student.name}`);
         console.log(`Age: ${student.age}`);
@@ -108,93 +106,27 @@ export let showStatus = async () => {
         console.log("Student not found!");
     }
 };
-// Function to update student information
-// export let updateStudent = async () => {
-//   let { ID } = await inquirer.prompt({
-//     name: "ID",
-//     type: "number",
-//     message: "Enter the student ID to update information"
-//   });
-//   let index = studentData.findIndex(student => student.ID === ID);
-//   if (index !== -1) {
-//     let updates = await inquirer.prompt([
-//       {
-//         name: "name",
-//         type: "input",
-//         message: "Enter the new name (press enter to skip)"
-//       },
-//       {
-//         name: "age",
-//         type: "input",
-//         message: "Enter the new age (press enter to skip)"
-//       }
-//       // Add more prompts if you want to update other fields
-//     ]);
-//     studentData[index] = {
-//       ...studentData[index],
-//       ...(updates.name && { name: updates.name }),
-//       ...(updates.age && { age: updates.age })
-//       // Add more fields here if necessary
-//     };
-//     console.log(`Student information updated for ID: ${ID}`);
-//   } else {
-//     console.log("Student not found!");
-//   }
-// };
-// Function to enroll in a course
-// export let enrollInCourse = async () => {
-//   let { ID } = await inquirer.prompt({
-//     name: "ID",
-//     type: "number",
-//     message: "Enter the student ID to enroll in a course"
-//   });
-//   let student = studentData.find(student => student.ID === ID);
-//   if (student) {
-//     let { course } = await inquirer.prompt({
-//       name: "course",
-//       type: "input",
-//       message: "Enter the course name to enroll"
-//     });
-//     // Assuming you have a property 'courses' in your Student interface
-//     student.courses = student.courses || [];
-//     student.courses.push(course);
-//     console.log(`Student ID: ${ID} enrolled in course: ${course}`);
-//   } else {
-//     console.log("Student not found!");
-//   }
-// };
-// // Update the main function to include the new options
-// let main = async function () {
-//   // ... existing code
-//   else if (Userchoice === "Show student status") {
-//     await showStatus();
-//   }
-//   else if (Userchoice === "Update student information") {
-//     await updateStudent();
-//   }
-//   else if (Userchoice === "Enroll in a course") {
-//     await enrollInCourse();
-//   }
-//   // ... rest of the main function
-// };
-// main();
-//enroll in a cource
+// ...
+// enroll in a course
 export let enrollment = async () => {
     let confirmID = await inquirer.prompt({
         name: "studentID",
         type: "number",
         message: "Enter student ID",
     });
-    let student = studentData.find(student => student.ID === confirmID.studentID);
+    let student = studentData.find((student) => student.ID === confirmID.studentID);
     if (student) {
+        // Ensure student.courses is an array
+        if (!Array.isArray(student.courses)) {
+            student.courses = [];
+        }
         let { course } = await inquirer.prompt({
             name: "course",
             type: "list",
             choices: ["HTML", "CSS", "JavaScript", "Typescript", "Next.js"],
             message: "Select the courses you want to enroll",
         });
-        student.courses = [course];
-        student.courses?.push(course);
+        student.courses.push(course);
         console.log(`Student successfully enrolled in ${course}`);
     }
     else {
