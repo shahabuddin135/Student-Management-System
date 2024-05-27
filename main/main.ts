@@ -3,7 +3,6 @@
 import inquirer from "inquirer";
 import { studentData } from "../database/database.js";
 import { admitStudent, showStatus } from "../functions/functions.js";
-import { makePrompt } from "../functions/functions.js";
 import { deleteStudent } from "../functions/functions.js";
 import { enrollment } from "../functions/functions.js";
 

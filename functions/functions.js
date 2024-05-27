@@ -1,18 +1,11 @@
 import inquirer from "inquirer";
 import { studentData } from "../database/database.js";
-export const makePrompt = async (name, message, type = "input", choices) => {
-    let question = {
-        name: name,
-        type: type,
-        message: message,
-        choices: choices,
-    };
-    // here goes obj addition logic and array push logic
-    studentData.push(question);
-    let prompt = await inquirer.prompt([question]);
-    console.log(prompt);
-};
-//function for student addmission
+// Function to generate unique student ID
+export function generateID() {
+    let ID = Math.floor(Math.random() * 90000) + 10000;
+    return ID;
+}
+// Function for student admission
 export let admitStudent = async () => {
     while (true) {
         let studentInfo = await inquirer.prompt([
@@ -30,41 +23,43 @@ export let admitStudent = async () => {
                 message: "Which course do you want to enroll in?",
                 name: "courses",
                 type: "list",
-                choices: ["Next.js", "Javascript", "Typescript", "HTML", "CSS"],
+                choices: ["HTML", "CSS", "JavaScript", "TypeScript", "Next.js"],
             },
             {
-                message: "Generate a unique ID?",
-                name: "generateID",
+                message: "Have you paid the fee?",
+                name: "feePaid",
                 type: "confirm",
             },
+            {
+                message: "Enter the due fee amount:",
+                name: "dueFee",
+                type: "number",
+                when: (answers) => !answers.feePaid, // Ask this only if the fee is not paid
+            },
         ]);
-        if (studentInfo.generateID) {
-            studentInfo.ID = generateID();
-            console.log(` Your unique ID is: ${studentInfo.ID}`);
-        }
-        else {
-            console.log("ID is Obligatory!");
-            return; // Exit the function if ID is not generated
-        }
+        // Generate a unique ID for the student
+        studentInfo.ID = generateID();
+        console.log(`Your unique ID is: ${studentInfo.ID}`);
+        // Convert age and dueFee to numbers
+        studentInfo.age = Number(studentInfo.age);
+        studentInfo.dueFee = Number(studentInfo.dueFee) || 0; // Default to 0 if not provided
+        // Initialize courses as an array with the selected course
+        studentInfo.courses = [studentInfo.courses];
+        // Push the new student into the studentData array
         studentData.push(studentInfo);
-        let repeatprogramme = await inquirer.prompt({
+        let repeatProgramme = await inquirer.prompt({
             name: "repeat",
             type: "confirm",
             message: "Admit more students?",
         });
-        if (!repeatprogramme.repeat) {
+        if (!repeatProgramme.repeat) {
             console.log("All students are admitted");
             console.log(studentData);
             break;
         }
     }
 };
-//function for Generating unique student ID
-export function generateID() {
-    let ID = Math.floor(Math.random() * 90000) + 10000;
-    return ID;
-}
-//delete student function
+// ... (rest of your code)
 export let deleteStudent = async () => {
     let confirmDelete = await inquirer.prompt({
         name: "confirm",
@@ -117,7 +112,7 @@ export let enrollment = async () => {
     let student = studentData.find((student) => student.ID === confirmID.studentID);
     if (student) {
         // Ensure student.courses is an array
-        if (!Array.isArray(student.courses)) {
+        if (!student.courses) {
             student.courses = [];
         }
         let { course } = await inquirer.prompt({

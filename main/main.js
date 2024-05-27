@@ -7,8 +7,15 @@ let main = async function () {
     let { Userchoice } = await inquirer.prompt({
         name: "Userchoice",
         type: "list",
-        choices: ["Pay fee", "Admit student", "Show student status", "Delete student", "Enroll in a course", "Exit"],
-        message: "What would you like to do?"
+        choices: [
+            "Pay fee",
+            "Admit student",
+            "Show student status",
+            "Delete student",
+            "Enroll in a course",
+            "Exit",
+        ],
+        message: "What would you like to do?",
     });
     if (Userchoice === "Admit student") {
         await admitStudent();
