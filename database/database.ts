@@ -17,4 +17,3 @@ export interface Student {
 
 export const studentData:Student[] = []; 
 
-

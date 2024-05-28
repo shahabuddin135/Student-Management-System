@@ -2,6 +2,95 @@
 import inquirer from "inquirer";
 import { studentData,Student } from "../database/database.js";
 
+//Pay fee function 
+
+export const payFee = async function() {
+  
+  let studentOrdinal = "student";
+  let singular_plural:string = "is"; 
+
+if(studentData.length > 1 || studentData.length === 0  ){
+    studentOrdinal = "students";
+    singular_plural = "are";
+
+}else{
+  singular_plural = "is"
+}
+
+console.log(`There ${singular_plural} ${studentData.length} ${studentOrdinal}`);
+
+if(studentData.length !== 0){
+
+  
+const answer = await inquirer.prompt([
+  {
+    name:"confirm",
+    type:"confirm",
+    message:"Do you want to pay student fee?",
+    //when fee is paid, prompt wont ask for fee 
+  }
+  
+]);
+
+if(answer.confirm === false){
+
+  console.log(`Thanks for Visiting!`);
+}else{
+
+  let payment = await inquirer.prompt([
+     {
+    message: `
+    Do you want to pay fee for the student?
+    course fee is  $${courseFee}
+    Your Bank Balance is $${studentBalance}`,
+    name: "courseFee",
+    type: "list",
+    choices:["Yes","No","Pay custom amount"]
+  },
+  {
+    message: `
+    Enter the Student ID to pay : $${courseFee}
+    Your Bank Balance is $${studentBalance}`,
+    name: "studentID",
+    type: "number",
+    when: (answers) => answers.courseFee === "Yes"
+  }
+
+]);
+
+
+let studentToPay:any = studentData.find(student => student.ID === payment.studentID );
+
+if(payment.courseFee === "Yes"){
+
+
+  if(studentBalance >= courseFee){
+  console.log(`Course fee has been paid! 
+  Your remaining balance is $${studentBalance -= courseFee} `);
+  studentToPay.dueFee -= courseFee;
+  studentToPay.feePaid = true;
+  }else{
+    console.log("Insufficient balance");
+    
+  }
+}else{
+  
+  console.log(`Your credit amount is $${studentToPay.dueFee} `);  
+}
+
+}
+  
+}
+
+
+}
+
+
+
+//random student balance 
+let studentBalance = Math.floor(Math.random()*3000 + 2000);
+let courseFee = Math.floor(Math.random()*300 + 200);
+
 
 // Function to generate unique student ID
 export function generateID() {
@@ -30,30 +119,51 @@ export let admitStudent = async () => {
         choices: ["HTML", "CSS", "JavaScript", "TypeScript", "Next.js"],
       },
       {
-        message: "Have you paid the fee?",
-        name: "feePaid",
-        type: "confirm",
+        message: `
+        Do you want to pay fee for the course?
+        course fee is  $${courseFee}
+        Your Bank Balance is $${studentBalance}`,
+        name: "courseFee",
+        type: "list",
+        choices:["Yeah sure","Maybe later"]
       },
       {
-        message: "Enter the due fee amount:",
-        name: "dueFee",
+        message: `
+        Enter the fee for the course: $${courseFee}
+        Your Bank Balance is $${studentBalance}`,
+        name: "courseFee",
         type: "number",
-        when: (answers) => !answers.feePaid, // Ask this only if the fee is not paid
+        when: (answers) => answers.courseFee === "Yeah sure"
       },
     ]);
+
+    if(studentInfo.courseFee === "Yeah sure"){
+      if(studentBalance >= courseFee){
+      console.log(`Course fee has been paid! 
+      Your remaining balance is ${studentBalance -= courseFee} `);
+      studentInfo.feePaid = true;
+      }else{
+        console.log("Insufficient balance");
+        
+      }
+    }else{
+      studentInfo.dueFee = courseFee;
+      studentInfo.feePaid = false;
+      console.log(`Your credit amount is $${studentInfo.dueFee} `);  
+    }
 
     // Generate a unique ID for the student
     studentInfo.ID = generateID();
     console.log(`Your unique ID is: ${studentInfo.ID}`);
 
-    // Convert age and dueFee to numbers
+    // Converting age and dueFee to numbers
     studentInfo.age = Number(studentInfo.age);
-    studentInfo.dueFee = Number(studentInfo.dueFee) || 0; // Default to 0 if not provided
+    studentInfo.dueFee = Number(studentInfo.dueFee) || 0; 
 
-    // Initialize courses as an array with the selected course
+    // Initializing courses as an array with the selected course
     studentInfo.courses = [studentInfo.courses];
 
-    // Push the new student into the studentData array
+    // Pushing the new student into the studentData array in database
     studentData.push(studentInfo as Student);
 
     let repeatProgramme = await inquirer.prompt({
@@ -69,8 +179,6 @@ export let admitStudent = async () => {
     }
   }
 };
-
-// ... (rest of your code)
 
 export let deleteStudent = async () => {
   let confirmDelete = await inquirer.prompt({

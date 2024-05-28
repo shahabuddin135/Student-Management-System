@@ -1,8 +1,6 @@
 // #!/usr/bin/env node
 import inquirer from "inquirer";
-import { admitStudent, showStatus } from "../functions/functions.js";
-import { deleteStudent } from "../functions/functions.js";
-import { enrollment } from "../functions/functions.js";
+import { admitStudent, showStatus, deleteStudent, enrollment, payFee } from "../functions/functions.js";
 let main = async function () {
     let { Userchoice } = await inquirer.prompt({
         name: "Userchoice",
@@ -17,7 +15,11 @@ let main = async function () {
         ],
         message: "What would you like to do?",
     });
-    if (Userchoice === "Admit student") {
+    if (Userchoice === "Pay fee") {
+        await payFee();
+        await main();
+    }
+    else if (Userchoice === "Admit student") {
         await admitStudent();
         await main();
     }
